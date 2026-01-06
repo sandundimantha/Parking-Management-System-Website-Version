@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Park Pal Swift - Payment</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="images/logo.png" alt="Park Pal Swift Logo">
+            PARK PAL SWIFT
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="booking.html">Booking</a>
+            <a href="payment.html" class="active">Payment</a>
+            <a href="admin.html">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 500px;">
+        <div class="text-center mb-4">
+            <h1>Payment</h1>
+            <p class="text-light">Complete your booking.</p>
+        </div>
+
+        <div id="booking-summary" class="mb-4 text-center"
+            style="background: #e2e8f0; padding: 1rem; border-radius: 0.5rem;">
+            <!-- Summary inserted by JS -->
+        </div>
+
+        <form id="payment-form"
+            style="background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <div class="mb-4">
+                <label for="card" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Card Number</label>
+                <input type="text" id="card" placeholder="0000 0000 0000 0000" maxlength="19" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="mb-4">
+                    <label for="expiry" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Expiry
+                        Date</label>
+                    <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                </div>
+                <div class="mb-4">
+                    <label for="cvv" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">CVV</label>
+                    <input type="password" id="cvv" placeholder="123" maxlength="3" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block">Pay Now</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const booking = JSON.parse(sessionStorage.getItem('currentBooking'));
+            const summaryDiv = document.getElementById('booking-summary');
+
+            if (!booking) {
+                summaryDiv.innerHTML = '<p class="text-danger">No booking found. Please start from Home.</p>';
+                document.getElementById('payment-form').style.display = 'none';
+                return;
+            }
+
+            summaryDiv.innerHTML = `
+                <p><strong>Booking for:</strong> ${booking.name}</p>
+                <p><strong>Slot:</strong> ${booking.slot}</p>
+                <p><strong>Vehicle:</strong> ${booking.vehicle}</p>
+                <p><strong>Date:</strong> ${booking.date}</p>
+            `;
+
+            document.getElementById('payment-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Simulate processing
+                const btn = e.target.querySelector('button');
+                btn.textContent = 'Processing...';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    // Update Slot Data in LocalStorage
+                    const slots = JSON.parse(localStorage.getItem('parkPalSlots')) || [];
+                    const slotIndex = slots.findIndex(s => s.id === booking.slot);
+
+                    if (slotIndex !== -1) {
+                        slots[slotIndex].booked = true;
+                        localStorage.setItem('parkPalSlots', JSON.stringify(slots));
+                    }
+
+                    // Add to Recent Bookings for Admin (optional, but good for completeness)
+                    const recentBookings = JSON.parse(localStorage.getItem('parkPalBookings')) || [];
+                    recentBookings.unshift(booking);
+                    if (recentBookings.length > 10) recentBookings.pop(); // Keep last 10
+                    localStorage.setItem('parkPalBookings', JSON.stringify(recentBookings));
+
+                    alert('Payment Successful! Booking Confirmed.');
+                    sessionStorage.removeItem('currentBooking');
+                    window.location.href = 'index.html';
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+
+</html>

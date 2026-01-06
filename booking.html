@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Park Pal Swift - Booking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="images/logo.png" alt="Park Pal Swift Logo">
+            PARK PAL SWIFT
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="booking.html" class="active">Booking</a>
+            <a href="payment.html">Payment</a>
+            <a href="admin.html">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 600px;">
+        <div class="text-center mb-4">
+            <h1>Book Parking Slot</h1>
+            <p class="text-light">Enter your details to reserve your spot.</p>
+        </div>
+
+        <form id="booking-form"
+            style="background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <div class="mb-4">
+                <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+                <input type="text" id="name" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            </div>
+
+            <div class="mb-4">
+                <label for="vehicle" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Vehicle
+                    Number</label>
+                <input type="text" id="vehicle" placeholder="e.g., ABC-1234" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            </div>
+
+            <div class="mb-4">
+                <label for="slot" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Slot Number</label>
+                <input type="text" id="slot" readonly
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem; background-color: #f1f5f9; cursor: not-allowed;">
+            </div>
+
+            <div class="mb-4">
+                <label for="date" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Date</label>
+                <input type="date" id="date" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Proceed to Payment</button>
+        </form>
+    </div>
+
+    <script src="js/booking.js"></script>
+</body>
+
+</html>

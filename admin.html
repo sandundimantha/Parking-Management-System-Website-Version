@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Park Pal Swift - Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .table-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="images/logo.png" alt="Park Pal Swift Logo">
+            PARK PAL SWIFT
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="booking.html">Booking</a>
+            <a href="payment.html">Payment</a>
+            <a href="admin.html" class="active">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-center mb-4">
+            <h1>Admin Dashboard</h1>
+            <p class="text-light">Overview of parking status and recent actvity.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="stats-total">0</div>
+                <div class="stat-label">Total Slots</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stats-available" style="color: var(--secondary-color);">0</div>
+                <div class="stat-label">Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stats-booked" style="color: var(--danger-color);">0</div>
+                <div class="stat-label">Booked</div>
+            </div>
+        </div>
+
+        <h2 class="mb-4">Recent Bookings</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Vehicle</th>
+                        <th>Slot</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-table">
+                    <!-- Rows inserted by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
