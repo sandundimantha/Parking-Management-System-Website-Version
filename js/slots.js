@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Configuration
     const vehicleTypes = [
-        { type: 'Car', count: 30, icon: 'images/car.png' },
+        { type: 'Car', count: 30, icon: 'images/bmw_car.png' },
         { type: 'Bike', count: 30, icon: 'images/bike.png' },
         { type: 'Jeep', count: 30, icon: 'images/jeep.png' },
         { type: 'Lorry', count: 30, icon: 'images/lorry.png' }
