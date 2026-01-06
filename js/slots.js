@@ -7,12 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
         { type: 'Car', count: 30, icon: 'images/bmw_car.png' },
         { type: 'Bike', count: 30, icon: 'images/bike.png' },
         { type: 'Jeep', count: 30, icon: 'images/jeep.png' },
-        { type: 'Lorry', count: 30, icon: 'images/lorry.png' }
+        { type: 'Lorry', count: 30, icon: 'images/lorry.png' },
+        { type: 'Car EV', count: 10, icon: 'images/bmw_car.png' },
+        { type: 'Bike EV', count: 10, icon: 'images/bike.png' },
+        { type: 'Jeep EV', count: 10, icon: 'images/jeep.png' },
+        { type: 'Lorry EV', count: 10, icon: 'images/lorry.png' }
     ];
 
     // Data Management
     let slotData = JSON.parse(localStorage.getItem('parkPalSlots'));
-    const totalExpected = 30 * 4;
+    const totalExpected = (30 * 4) + (10 * 4);
 
     if (!slotData || slotData.length < totalExpected) {
         slotData = [];

@@ -106,6 +106,9 @@
                 <p><strong>Vehicle:</strong> ${booking.vehicle}</p>
                 <p><strong>Duration:</strong> ${booking.duration || 'Daily'}</p>
                 <p><strong>Date:</strong> ${booking.date}</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ccc;">
+                    <p style="font-size: 1.25rem; margin-bottom: 0;"><strong>Total Amount:</strong> <span style="color: var(--secondary-color); font-weight: 700;">$${booking.price || '0'}</span></p>
+                </div>
             `;
 
             document.getElementById('payment-form').addEventListener('submit', (e) => {

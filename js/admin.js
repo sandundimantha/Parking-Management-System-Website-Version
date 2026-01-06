@@ -21,16 +21,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1b. Calculate Vehicle Specific Stats for Chart
     const vehicleCounts = {
-        'Car': 0,
-        'Bike': 0,
-        'Jeep': 0,
-        'Lorry': 0
+        'Car': 0, 'Bike': 0, 'Jeep': 0, 'Lorry': 0,
+        'Car EV': 0, 'Bike EV': 0, 'Jeep EV': 0, 'Lorry EV': 0
     };
 
     slots.forEach(s => {
         if (s.booked) {
-            // Extract type from ID (e.g. "Car-1")
-            const type = s.id.split('-')[0];
+            // Extract type from ID (e.g. "Car-1", "Car EV-1")
+            let type = s.id.split('-')[0];
+            // Handle space in EV types if format is "Car EV-1" (split gives "Car EV") -- actually split('-')[0] works if delimiter is strictly first hyphen
+            // But wait, split('-')[0] of "Car EV-1" IS "Car EV". Correct.
+            // Just need to ensure the key exists.
+
+            // Re-verify split logic: "Car EV-1".split('-') -> ["Car EV", "1"] -> [0] is "Car EV".
+            // So it matches the key. 
+
             if (vehicleCounts[type] !== undefined) {
                 vehicleCounts[type]++;
             }
@@ -42,14 +47,21 @@ document.addEventListener('DOMContentLoaded', () => {
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Car', 'Bike', 'Jeep', 'Lorry'],
+            labels: ['Car', 'Bike', 'Jeep', 'Lorry', 'Car EV', 'Bike EV', 'Jeep EV', 'Lorry EV'],
             datasets: [{
-                data: [vehicleCounts['Car'], vehicleCounts['Bike'], vehicleCounts['Jeep'], vehicleCounts['Lorry']],
+                data: [
+                    vehicleCounts['Car'], vehicleCounts['Bike'], vehicleCounts['Jeep'], vehicleCounts['Lorry'],
+                    vehicleCounts['Car EV'], vehicleCounts['Bike EV'], vehicleCounts['Jeep EV'], vehicleCounts['Lorry EV']
+                ],
                 backgroundColor: [
-                    '#3b82f6', // Blue for Car
-                    '#22c55e', // Green for Bike
-                    '#f59e0b', // Yellow for Jeep
-                    '#ef4444'  // Red for Lorry
+                    '#3b82f6', // Car (Blue)
+                    '#22c55e', // Bike (Green)
+                    '#f59e0b', // Jeep (Yellow)
+                    '#ef4444', // Lorry (Red)
+                    '#60a5fa', // Car EV (Light Blue)
+                    '#4ade80', // Bike EV (Light Green)
+                    '#fcd34d', // Jeep EV (Light Yellow)
+                    '#f87171'  // Lorry EV (Light Red)
                 ],
                 borderWidth: 1
             }]
