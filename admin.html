@@ -101,7 +101,24 @@
             </div>
         </div>
 
-        <h2 class="mb-4">Recent Bookings</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 class="mb-0">Recent Bookings</h2>
+            <div id="filters">
+                <button class="btn btn-primary" onclick="filterBookings('All')">All</button>
+                <button class="btn"
+                    style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
+                    onclick="filterBookings('Daily')">Daily</button>
+                <button class="btn"
+                    style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
+                    onclick="filterBookings('Weekly')">Weekly</button>
+                <button class="btn"
+                    style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
+                    onclick="filterBookings('Monthly')">Monthly</button>
+                <button class="btn"
+                    style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
+                    onclick="filterBookings('Yearly')">Yearly</button>
+            </div>
+        </div>
         <div class="table-container">
             <table>
                 <thead>
@@ -109,6 +126,7 @@
                         <th>Name</th>
                         <th>Vehicle</th>
                         <th>Slot</th>
+                        <th>Duration</th>
                         <th>Date</th>
                         <th>Status</th>
                     </tr>
@@ -119,6 +137,10 @@
             </table>
         </div>
     </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Park Pal Swift. All rights reserved.</p>
+    </footer>
 
     <script src="js/admin.js"></script>
 </body>

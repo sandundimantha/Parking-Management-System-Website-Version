@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
             name: document.getElementById('name').value,
             vehicle: document.getElementById('vehicle').value,
             slot: slotInput.value,
-            date: dateInput.value
+            date: dateInput.value,
+            duration: document.getElementById('duration').value
         };
 
         // Save to sessionStorage to pass to payment page

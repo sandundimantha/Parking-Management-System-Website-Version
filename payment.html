@@ -61,6 +61,10 @@
         </form>
     </div>
 
+    <footer class="footer">
+        <p>&copy; 2026 Park Pal Swift. All rights reserved.</p>
+    </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const booking = JSON.parse(sessionStorage.getItem('currentBooking'));
@@ -76,6 +80,7 @@
                 <p><strong>Booking for:</strong> ${booking.name}</p>
                 <p><strong>Slot:</strong> ${booking.slot}</p>
                 <p><strong>Vehicle:</strong> ${booking.vehicle}</p>
+                <p><strong>Duration:</strong> ${booking.duration || 'Daily'}</p>
                 <p><strong>Date:</strong> ${booking.date}</p>
             `;
 
