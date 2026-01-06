@@ -3,27 +3,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Configuration
     const vehicleTypes = [
-        { type: 'Car', count: 6, icon: 'images/car.png' },
-        { type: 'Bike', count: 6, icon: 'images/car.png' }, // Default placeholder, ideally would be unique
-        { type: 'Jeep', count: 4, icon: 'images/car.png' },
-        { type: 'Lorry', count: 3, icon: 'images/car.png' }
+        { type: 'Car', count: 30, icon: 'images/car.png' },
+        { type: 'Bike', count: 30, icon: 'images/bike.png' },
+        { type: 'Jeep', count: 30, icon: 'images/jeep.png' },
+        { type: 'Lorry', count: 30, icon: 'images/lorry.png' }
     ];
 
-    // Check and Reset Data for Version 2 (Typed Slots)
+    // Check and Reset Data for Version 3 (Expanded Counts)
     let slotData = JSON.parse(localStorage.getItem('parkPalSlots'));
 
-    // Simple check: if data exists but ID doesn't contain hyphen or known type, reset.
-    // Or just force reset if specific flag not present.
-    const isV2 = slotData && slotData.length > 0 && (slotData[0].type !== undefined);
+    // Check if we need to expand data
+    // We can do a simple check: if we have less slots than expected, we re-verify or append
+    // For simplicity in this demo, if the count doesn't match roughly, we reset.
+    // Or simpler: check if 'Bike' exists, AND if we have enough of them.
 
-    if (!slotData || !isV2) {
+    const totalExpected = 30 * 4;
+    const currentCount = slotData ? slotData.length : 0;
+
+    // Force reset if counts don't match our new requirement (or if data is missing)
+    if (!slotData || currentCount < totalExpected) {
         slotData = [];
         vehicleTypes.forEach(vt => {
             for (let i = 1; i <= vt.count; i++) {
                 slotData.push({
                     id: `${vt.type}-${i}`,
                     type: vt.type,
-                    booked: Math.random() < 0.3 // 30% chance booked
+                    booked: Math.random() < 0.2 // Reduced booking chance since we have so many slots
                 });
             }
         });
@@ -41,9 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             section.className = 'mb-4';
 
             const title = document.createElement('h3');
-            title.textContent = `${vt.type} Parking`;
-            // title.style.borderBottom = `2px solid var(--primary-color)`;
-            // title.style.display = 'inline-block';
+            title.textContent = `${vt.type} Parking (${vt.count} Slots)`;
             section.appendChild(title);
 
             const grid = document.createElement('div');
@@ -65,12 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const carImg = document.createElement('img');
-                carImg.src = vt.icon; // Use icon from config
-                carImg.alt = 'Vehicle Icon';
+                carImg.src = vt.icon; // Use specific icon
+                carImg.alt = `${vt.type} Icon`;
 
                 const slotId = document.createElement('span');
                 slotId.classList.add('slot-id');
-                slotId.textContent = slot.id;
+                slotId.textContent = slot.id.split('-')[1]; // Just show number to save space
 
                 slotEl.appendChild(carImg);
                 slotEl.appendChild(slotId);

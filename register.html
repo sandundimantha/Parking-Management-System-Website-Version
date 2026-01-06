@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - Register</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="images/logo.png" alt="SmartPark Logo">
+            SmartPark
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html" class="active">Register</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 400px; margin-top: 3rem;">
+        <div class="text-center mb-4">
+            <h1>Create Account</h1>
+            <p class="text-light">Join SmartPark today.</p>
+        </div>
+
+        <form id="register-form"
+            style="background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <div id="error-msg" class="text-danger mb-4 text-center" style="display: none; color: var(--danger-color);">
+            </div>
+
+            <div class="mb-4">
+                <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+                <input type="text" id="name" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            </div>
+
+            <div class="mb-4">
+                <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email
+                    Address</label>
+                <input type="email" id="email" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            </div>
+
+            <div class="mb-4">
+                <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Password</label>
+                <input type="password" id="password" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            </div>
+
+            <div class="mb-4">
+                <label for="confirm-password" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Confirm
+                    Password</label>
+                <input type="password" id="confirm-password" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block">Register</button>
+
+            <p class="mt-4 text-center" style="font-size: 0.9rem;">
+                Already have an account? <a href="login.html"
+                    style="color: var(--primary-color); font-weight: 600;">Login here</a>
+            </p>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 SmartPark. All rights reserved.</p>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorDiv = document.getElementById('error-msg');
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = "Passwords do not match!";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const result = Auth.register(name, email, password);
+            if (result.success) {
+                alert(result.message);
+                window.location.href = 'login.html';
+            } else {
+                errorDiv.textContent = result.message;
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

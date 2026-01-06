@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - User Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="images/logo.png" alt="SmartPark Logo">
+            SmartPark
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="booking.html">Booking</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <a href="#" id="logout-btn">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>My Dashboard</h1>
+            <span id="user-greeting" style="font-weight: 600; color: var(--text-light);">Welcome</span>
+        </div>
+
+        <!-- Overview Cards -->
+        <div class="mb-4"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div
+                style="background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="font-size: 2.5rem; font-weight: 700; color: var(--secondary-color);" id="total-available">0
+                </div>
+                <div class="text-light">Slots Available Now</div>
+            </div>
+            <div style="background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;"
+                onclick="window.location.href='index.html'">
+                <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary-color); margin-bottom: 0.5rem;">
+                    Book a Slot</div>
+                <div class="text-light">Find parking &rarr;</div>
+            </div>
+        </div>
+
+        <h2 class="mb-4">My Booking History</h2>
+        <div
+            style="background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">Slot
+                        </th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">
+                            Vehicle</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">
+                            Duration</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">Date
+                        </th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color);">
+                            Status</th>
+                    </tr>
+                </thead>
+                <tbody id="my-bookings">
+                    <!-- JS will populate -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 SmartPark. All rights reserved.</p>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Protect Route
+            Auth.requireLogin();
+
+            const user = Auth.getCurrentUser();
+            document.getElementById('user-greeting').textContent = `Welcome, ${user.name}`;
+
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                Auth.logout();
+            });
+
+            // 1. Get Available Slots Count
+            const slots = JSON.parse(localStorage.getItem('parkPalSlots')) || [];
+            const availableCount = slots.filter(s => !s.booked).length;
+            document.getElementById('total-available').textContent = availableCount;
+
+            // 2. Load My Bookings
+            // Important: We need to filter bookings by User Name or Email if we tracked it.
+            // In our simple booking.js, we only saved 'name'. We'll assume User Name matches for this demo.
+            // Ideally, booking should have 'userEmail' or 'userId'.
+            // Since we didn't add that earlier, we will just show 'All Recent' purely for demo if name matches,
+            // OR we update booking logic to include data. For now let's just show all for demo purposes or filter by name.
+
+            const bookings = JSON.parse(localStorage.getItem('parkPalBookings')) || [];
+            // Simple match by name
+            const myBookings = bookings.filter(b => b.name.toLowerCase() === user.name.toLowerCase());
+
+            const tbody = document.getElementById('my-bookings');
+            if (myBookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">No bookings found. <a href="index.html">Book now!</a></td></tr>';
+            } else {
+                myBookings.forEach(b => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);"><strong>${b.slot}</strong></td>
+                        <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">${b.vehicle}</td>
+                        <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">${b.duration || 'Daily'}</td>
+                        <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);">${b.date}</td>
+                        <td style="padding: 1rem; border-bottom: 1px solid var(--border-color);"><span style="color: var(--secondary-color); font-weight: 600;">Active</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

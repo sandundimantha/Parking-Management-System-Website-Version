@@ -1,6 +1,6 @@
-# PARK PAL SWIFT 🚗
+# SmartPark 🚗
 
-PARK PAL SWIFT is a simple Parking Management System website created for learning and demonstration purposes.
+SmartPark is a simple Parking Management System website created for learning and demonstration purposes.
 
 ## Features
 - **Parking Slot Availability**: View real-time (simulated) status of parking slots.
