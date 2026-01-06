@@ -63,6 +63,27 @@
         tr:last-child td {
             border-bottom: none;
         }
+
+        .admin-header {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-header p {
+            color: var(--text-light);
+            margin-bottom: 0;
+        }
     </style>
 </head>
 
@@ -77,14 +98,34 @@
             <a href="index.html">Home</a>
             <a href="booking.html">Booking</a>
             <a href="payment.html">Payment</a>
-            <a href="admin.html" class="active">Admin</a>
+            <!-- <a href="admin.html" class="active">Admin</a> -->
+            <div class="profile-dropdown">
+                <button class="profile-trigger" onclick="toggleDropdown()">
+                    <img id="nav-profile-pic"
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' width='32' height='32'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E"
+                        alt="Profile">
+                    <span id="nav-user-name">Admin</span>
+                </button>
+                <div id="nav-dropdown" class="dropdown-menu">
+                    <button class="dropdown-item" onclick="openEditProfile(); toggleDropdown()">Edit Profile</button>
+                    <div style="height: 1px; background: #e2e8f0; margin: 0.5rem 0;"></div>
+                    <button class="dropdown-item" onclick="Auth.logout()"
+                        style="color: var(--danger-color);">Logout</button>
+                </div>
+            </div>
         </div>
     </nav>
 
     <div class="container">
-        <div class="text-center mb-4">
-            <h1>Admin Dashboard</h1>
-            <p class="text-light">Overview of parking status and recent actvity.</p>
+        <div class="admin-header">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Overview of parking status and recent activity.</p>
+            </div>
+            <div style="text-align: right;">
+                <span id="user-greeting" style="font-weight: 600; color: var(--text-light); display: block;">Welcome,
+                    Admin</span>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -199,6 +240,46 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-content"
+            style="background-color: #fefefe; margin: 10% auto; padding: 2rem; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0;">Edit Profile</h2>
+                <span onclick="closeEditProfile()"
+                    style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+
+            <form id="edit-profile-form">
+                <div class="mb-4">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+                    <input type="text" id="edit-name" class="form-control" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                </div>
+
+                <div class="mb-4">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Profile Photo</label>
+                    <input type="file" id="edit-profile-file" accept="image/*" class="form-control"
+                        style="width: 100%; padding: 0.5rem;">
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem;">Max size: 300x300px
+                        (Auto-resized)</p>
+                </div>
+
+                <div class="mb-4">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Vehicle Photo</label>
+                    <input type="file" id="edit-vehicle-file" accept="image/*" class="form-control"
+                        style="width: 100%; padding: 0.5rem;">
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem;">Max size: 400x300px
+                        (Auto-resized)</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="container footer-content">
@@ -230,6 +311,143 @@
 
     <script src="js/auth.js"></script>
     <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Admin Profile Logic
+            const user = Auth.getCurrentUser();
+            updateProfileUI(user);
+
+            // Dropdown Toggle
+            window.toggleDropdown = function () {
+                const dropdown = document.getElementById('nav-dropdown');
+                dropdown.classList.toggle('show');
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                const dropdown = document.getElementById('nav-dropdown');
+                const trigger = document.querySelector('.profile-trigger');
+                if (!trigger.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            window.openEditProfile = function () {
+                const currentUser = Auth.getCurrentUser();
+                document.getElementById('edit-name').value = currentUser.name;
+                // Clear file inputs
+                document.getElementById('edit-profile-file').value = '';
+                document.getElementById('edit-vehicle-file').value = '';
+                document.getElementById('editProfileModal').style.display = 'block';
+            };
+
+            window.closeEditProfile = function () {
+                document.getElementById('editProfileModal').style.display = 'none';
+            };
+
+            // Close modal on outside click
+            window.onclick = function (event) {
+                const modal = document.getElementById('editProfileModal');
+                const userModal = document.getElementById('userProfileModal'); // Existing modal
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+                if (event.target == userModal) {
+                    userModal.style.display = "none";
+                }
+            };
+
+            // Image Processing Helper (Reused)
+            function processImage(file, maxWidth, maxHeight) {
+                return new Promise((resolve, reject) => {
+                    if (!file) {
+                        resolve(null);
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function (e) {
+                        const img = new Image();
+                        img.src = e.target.result;
+                        img.onload = function () {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+
+                            // Calculate new dimensions
+                            if (width > height) {
+                                if (width > maxWidth) {
+                                    height *= maxWidth / width;
+                                    width = maxWidth;
+                                }
+                            } else {
+                                if (height > maxHeight) {
+                                    width *= maxHeight / height;
+                                    height = maxHeight;
+                                }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // Compress
+                            resolve(canvas.toDataURL('image/jpeg', 0.7));
+                        };
+                    };
+                    reader.onerror = error => reject(error);
+                });
+            }
+
+            // Handle Form Submission
+            document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('edit-name').value;
+                const profileFile = document.getElementById('edit-profile-file').files[0];
+                const vehicleFile = document.getElementById('edit-vehicle-file').files[0];
+
+                try {
+                    const updates = { name };
+
+                    if (profileFile) {
+                        updates.profilePic = await processImage(profileFile, 300, 300);
+                    }
+
+                    if (vehicleFile) {
+                        updates.vehiclePic = await processImage(vehicleFile, 400, 300);
+                    }
+
+                    const result = Auth.updateProfile(updates);
+                    if (result.success) {
+                        updateProfileUI(result.user);
+                        closeEditProfile();
+                        alert('Profile updated successfully!');
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert('Error updating profile');
+                }
+            });
+
+            function updateProfileUI(user) {
+                if (!user) return;
+                // Header & Card
+                document.getElementById('user-greeting').textContent = `Welcome, ${user.name}`;
+
+                // Navbar
+                document.getElementById('nav-user-name').textContent = user.name.split(' ')[0];
+
+                if (user.profilePic) {
+                    document.getElementById('nav-profile-pic').src = user.profilePic;
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
+```

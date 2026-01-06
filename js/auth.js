@@ -102,6 +102,33 @@ const Auth = {
     },
 
     // Protect Admin Route
+    // Update User Profile
+    updateProfile: function (updates) {
+        const user = this.getCurrentUser();
+        if (!user) return { success: false, message: 'No user logged in' };
+
+        const users = JSON.parse(localStorage.getItem(this.USERS_KEY)) || [];
+        const userIndex = users.findIndex(u => u.email === user.email);
+
+        if (userIndex === -1) {
+            return { success: false, message: 'User record not found' };
+        }
+
+        // Merge updates
+        const updatedUser = { ...users[userIndex], ...updates };
+
+        // Update arrays
+        users[userIndex] = updatedUser;
+        localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+
+        // Update Session
+        // Remove password before saving to session if it exists in updates (though we won't update pwd here yet)
+        const { password, ...safeUser } = updatedUser;
+        localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(safeUser));
+
+        return { success: true, user: safeUser };
+    },
+
     requireAdmin: function () {
         const user = this.getCurrentUser();
         if (!user || user.role !== 'admin') {
