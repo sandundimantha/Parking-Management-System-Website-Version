@@ -21,7 +21,8 @@ const Auth = {
             name,
             email,
             password,
-            role // Store dynamic role
+            role, // Store dynamic role
+            isActive: true // Default active status
         };
 
         users.push(newUser);
@@ -70,6 +71,9 @@ const Auth = {
             }
 
             if (user && user.role === 'user') {
+                if (user.isActive === false) {
+                    return { success: false, message: 'Account Deactivated. Contact Admin.' };
+                }
                 const { password, ...safeUser } = user;
                 localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(safeUser));
                 return { success: true, user: safeUser };

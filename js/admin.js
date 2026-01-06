@@ -19,6 +19,52 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('stats-available').textContent = available;
     document.getElementById('stats-booked').textContent = booked;
 
+    // 1b. Calculate Vehicle Specific Stats for Chart
+    const vehicleCounts = {
+        'Car': 0,
+        'Bike': 0,
+        'Jeep': 0,
+        'Lorry': 0
+    };
+
+    slots.forEach(s => {
+        if (s.booked) {
+            // Extract type from ID (e.g. "Car-1")
+            const type = s.id.split('-')[0];
+            if (vehicleCounts[type] !== undefined) {
+                vehicleCounts[type]++;
+            }
+        }
+    });
+
+    // Render Chart
+    const ctx = document.getElementById('vehicleChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Car', 'Bike', 'Jeep', 'Lorry'],
+            datasets: [{
+                data: [vehicleCounts['Car'], vehicleCounts['Bike'], vehicleCounts['Jeep'], vehicleCounts['Lorry']],
+                backgroundColor: [
+                    '#3b82f6', // Blue for Car
+                    '#22c55e', // Green for Bike
+                    '#f59e0b', // Yellow for Jeep
+                    '#ef4444'  // Red for Lorry
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
     // 2. Initial Table Load
     const bookings = JSON.parse(localStorage.getItem('parkPalBookings')) || [];
     renderTable(bookings);
@@ -68,4 +114,123 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // 3. User Management Logic
+    const users = JSON.parse(localStorage.getItem('parkPalUsers')) || [];
+    renderUsers(users);
+
+    function renderUsers(usersData) {
+        const tbody = document.getElementById('users-table');
+        if (!tbody) return; // Guard clause
+
+        tbody.innerHTML = '';
+
+        if (usersData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">No registered users found.</td></tr>';
+        } else {
+            usersData.forEach(user => {
+                // Don't show admin in the normal user list or handle differently
+                if (user.role === 'admin') return;
+
+                const isActive = user.isActive !== false; // Default true
+                const statusColor = isActive ? 'var(--secondary-color)' : 'var(--danger-color)';
+                const statusText = isActive ? 'Active' : 'Deactivated';
+                const btnText = isActive ? 'Deactivate' : 'Activate';
+                const btnColor = isActive ? 'var(--danger-color)' : 'var(--secondary-color)';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td><span style="color: ${statusColor}; font-weight: 600;">${statusText}</span></td>
+                    <td>
+                        <button onclick="viewUserProfile('${user.email}')" 
+                                style="background: var(--primary-color); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; margin-right: 0.5rem;">
+                            View
+                        </button>
+                        <button onclick="toggleUserStatus('${user.email}')" 
+                                style="background: ${btnColor}; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer;">
+                            ${btnText}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    }
+
+    // Toggle User Status
+    window.toggleUserStatus = function (email) {
+        const currentUsers = JSON.parse(localStorage.getItem('parkPalUsers')) || [];
+        const userIndex = currentUsers.findIndex(u => u.email === email);
+
+        if (userIndex !== -1) {
+            // Toggle status (initialize to true if undefined)
+            if (currentUsers[userIndex].isActive === undefined) {
+                currentUsers[userIndex].isActive = true;
+            }
+            currentUsers[userIndex].isActive = !currentUsers[userIndex].isActive;
+
+            // Save and Re-render
+            localStorage.setItem('parkPalUsers', JSON.stringify(currentUsers));
+            renderUsers(currentUsers);
+            alert(`User ${currentUsers[userIndex].isActive ? 'Activated' : 'Deactivated'} successfully.`);
+        }
+    };
+
+    // View User Profile
+    window.viewUserProfile = function (email) {
+        const currentUsers = JSON.parse(localStorage.getItem('parkPalUsers')) || [];
+        const user = currentUsers.find(u => u.email === email);
+
+        if (user) {
+            const bookings = JSON.parse(localStorage.getItem('parkPalBookings')) || [];
+            // Filter by name since we don't strictly link by ID yet
+            const userBookings = bookings.filter(b => b.name.toLowerCase() === user.name.toLowerCase());
+
+            // 1. Populate Details
+            const detailsDiv = document.getElementById('user-profile-details');
+            detailsDiv.innerHTML = `
+                <p><strong>Name:</strong> ${user.name}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Role:</strong> ${user.role}</p>
+                <p><strong>Status:</strong> ${user.isActive !== false ? 'Active' : 'Deactivated'}</p>
+            `;
+
+            // 2. Populate Bookings
+            const bookingsTbody = document.getElementById('user-profile-bookings');
+            bookingsTbody.innerHTML = '';
+            if (userBookings.length === 0) {
+                bookingsTbody.innerHTML = '<tr><td colspan="5" class="text-center">No bookings found for this user.</td></tr>';
+            } else {
+                userBookings.forEach(b => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${b.slot}</strong></td>
+                        <td>${b.vehicle}</td>
+                        <td>${b.duration || 'Daily'}</td>
+                        <td>${b.date}</td>
+                        <td><span style="color: var(--secondary-color);">Active</span></td>
+                    `;
+                    bookingsTbody.appendChild(row);
+                });
+            }
+
+            // 3. Show Modal
+            document.getElementById('userProfileModal').style.display = 'block';
+        }
+    };
+
+    window.closeUserProfile = function () {
+        document.getElementById('userProfileModal').style.display = 'none';
+    };
+
+    // Close modal if clicking outside
+    window.onclick = function (event) {
+        const modal = document.getElementById('userProfileModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
 });

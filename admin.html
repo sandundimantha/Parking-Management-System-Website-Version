@@ -7,6 +7,7 @@
     <title>SmartPark - Admin</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .stats-grid {
             display: grid;
@@ -101,25 +102,33 @@
             </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h2 class="mb-0">Recent Bookings</h2>
-            <div id="filters">
-                <button class="btn btn-primary" onclick="filterBookings('All')">All</button>
-                <button class="btn"
-                    style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
-                    onclick="filterBookings('Daily')">Daily</button>
-                <button class="btn"
-                    style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
-                    onclick="filterBookings('Weekly')">Weekly</button>
-                <button class="btn"
-                    style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
-                    onclick="filterBookings('Monthly')">Monthly</button>
-                <button class="btn"
-                    style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
-                    onclick="filterBookings('Yearly')">Yearly</button>
+        <!-- Vehicle Stats Chart -->
+        <div class="table-container" style="margin-bottom: 2rem; text-align: center;">
+            <h2 class="mb-4">Vehicle Occupancy Stats</h2>
+            <div style="max-width: 400px; margin: 0 auto;">
+                <canvas id="vehicleChart"></canvas>
             </div>
         </div>
+
         <div class="table-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 class="mb-0">Recent Bookings</h2>
+                <div id="filters">
+                    <button class="btn btn-primary" onclick="filterBookings('All')">All</button>
+                    <button class="btn"
+                        style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
+                        onclick="filterBookings('Daily')">Daily</button>
+                    <button class="btn"
+                        style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
+                        onclick="filterBookings('Weekly')">Weekly</button>
+                    <button class="btn"
+                        style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
+                        onclick="filterBookings('Monthly')">Monthly</button>
+                    <button class="btn"
+                        style="background:transparent; color:var(--text-color); border:1px solid var(--border-color);"
+                        onclick="filterBookings('Yearly')">Yearly</button>
+                </div>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -135,6 +144,59 @@
                     <!-- Rows inserted by JS -->
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- User Management Section -->
+    <div class="table-container" style="margin-top: 2rem;">
+        <h2 class="mb-4">User Management</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="users-table">
+                <!-- Rows inserted by JS -->
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="userProfileModal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-content"
+            style="background-color: #fefefe; margin: 10% auto; padding: 2rem; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 1rem; position: relative;">
+            <span class="close" onclick="closeUserProfile()"
+                style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            <h2 class="mb-4">User Profile</h2>
+            <div id="user-profile-details" class="mb-4">
+                <!-- Details injected by JS -->
+            </div>
+            <h3 class="mb-2">Booking History</h3>
+            <div class="table-container">
+                <table style="width: 100%; margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>Slot</th>
+                            <th>Vehicle</th>
+                            <th>Duration</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-profile-bookings">
+                        <!-- Bookings injected by JS -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
