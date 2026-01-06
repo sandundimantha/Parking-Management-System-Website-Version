@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Security Check
+    if (typeof Auth !== 'undefined') {
+        Auth.requireAdmin();
+    } else {
+        // Fallback if auth.js didn't load for some reason, though it should.
+        window.location.href = 'login.html';
+    }
+
     // 1. Calculate Stats
     const slots = JSON.parse(localStorage.getItem('parkPalSlots')) || [];
 

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const parkingLotContainer = document.getElementById('parking-lot-container');
+    const toggle = document.getElementById('availability-toggle');
 
     // Configuration
     const vehicleTypes = [
@@ -9,76 +10,110 @@ document.addEventListener('DOMContentLoaded', () => {
         { type: 'Lorry', count: 30, icon: 'images/lorry.png' }
     ];
 
-    // Check and Reset Data for Version 3 (Expanded Counts)
+    // Data Management
     let slotData = JSON.parse(localStorage.getItem('parkPalSlots'));
-
-    // Check if we need to expand data
-    // We can do a simple check: if we have less slots than expected, we re-verify or append
-    // For simplicity in this demo, if the count doesn't match roughly, we reset.
-    // Or simpler: check if 'Bike' exists, AND if we have enough of them.
-
     const totalExpected = 30 * 4;
-    const currentCount = slotData ? slotData.length : 0;
 
-    // Force reset if counts don't match our new requirement (or if data is missing)
-    if (!slotData || currentCount < totalExpected) {
+    if (!slotData || slotData.length < totalExpected) {
         slotData = [];
         vehicleTypes.forEach(vt => {
             for (let i = 1; i <= vt.count; i++) {
                 slotData.push({
                     id: `${vt.type}-${i}`,
                     type: vt.type,
-                    booked: Math.random() < 0.2 // Reduced booking chance since we have so many slots
+                    booked: Math.random() < 0.2
                 });
             }
         });
         localStorage.setItem('parkPalSlots', JSON.stringify(slotData));
     }
 
-    renderAllSlots(slotData);
+    // Initial Render
+    renderAllSlots(slotData, false);
 
-    function renderAllSlots(slots) {
-        parkingLotContainer.innerHTML = ''; // Clear container
+    // Toggle Listener
+    if (toggle) {
+        toggle.addEventListener('change', (e) => {
+            renderAllSlots(slotData, e.target.checked);
+        });
+    }
+
+    function renderAllSlots(slots, showAvailableOnly) {
+        parkingLotContainer.innerHTML = '';
 
         vehicleTypes.forEach(vt => {
-            // Create Section for each type
+            const typeSlots = slots.filter(s => s.type === vt.type);
+            const availableCount = typeSlots.filter(s => !s.booked).length;
+
+            // Allow section to hide if filtering only available and none are available? 
+            // Better to show empty state.
+
+            // Header with Stats
             const section = document.createElement('div');
             section.className = 'mb-4';
 
-            const title = document.createElement('h3');
-            title.textContent = `${vt.type} Parking (${vt.count} Slots)`;
-            section.appendChild(title);
+            const header = document.createElement('div');
+            header.style.display = 'flex';
+            header.style.justifyContent = 'space-between';
+            header.style.alignItems = 'center';
+            header.style.marginBottom = '1rem';
+            header.style.borderBottom = '1px solid var(--border-color)';
+            header.style.paddingBottom = '0.5rem';
 
+            const title = document.createElement('h3');
+            title.style.marginBottom = '0';
+            title.textContent = `${vt.type} Parking`;
+
+            const badge = document.createElement('span');
+            badge.style.background = availableCount > 0 ? 'var(--secondary-color)' : 'var(--danger-color)';
+            badge.style.color = 'white';
+            badge.style.padding = '0.25rem 0.75rem';
+            badge.style.borderRadius = '20px';
+            badge.style.fontSize = '0.875rem';
+            badge.style.fontWeight = '600';
+            badge.textContent = `${availableCount} Available`;
+
+            header.appendChild(title);
+            header.appendChild(badge);
+            section.appendChild(header);
+
+            // Grid
             const grid = document.createElement('div');
             grid.classList.add('parking-lot');
 
-            // Filter slots for this type
-            const typeSlots = slots.filter(s => s.type === vt.type);
+            let visibleSlots = typeSlots;
+            if (showAvailableOnly) {
+                visibleSlots = typeSlots.filter(s => !s.booked);
+            }
 
-            typeSlots.forEach(slot => {
-                const slotEl = document.createElement('div');
-                slotEl.classList.add('slot');
-                if (slot.booked) {
-                    slotEl.classList.add('booked');
-                    slotEl.title = "Slot Booked";
-                } else {
-                    slotEl.classList.add('available');
-                    slotEl.title = "Click to Book";
-                    slotEl.onclick = () => window.location.href = `booking.html?slot=${slot.id}`;
-                }
+            if (visibleSlots.length === 0) {
+                grid.innerHTML = '<p class="text-center" style="grid-column: 1/-1; color: var(--text-light);">No slots available matching your criteria.</p>';
+            } else {
+                visibleSlots.forEach(slot => {
+                    const slotEl = document.createElement('div');
+                    slotEl.classList.add('slot');
+                    if (slot.booked) {
+                        slotEl.classList.add('booked');
+                        slotEl.title = "Slot Booked";
+                    } else {
+                        slotEl.classList.add('available');
+                        slotEl.title = "Click to Book";
+                        slotEl.onclick = () => window.location.href = `booking.html?slot=${slot.id}`;
+                    }
 
-                const carImg = document.createElement('img');
-                carImg.src = vt.icon; // Use specific icon
-                carImg.alt = `${vt.type} Icon`;
+                    const carImg = document.createElement('img');
+                    carImg.src = vt.icon;
+                    carImg.alt = `${vt.type} Icon`;
 
-                const slotId = document.createElement('span');
-                slotId.classList.add('slot-id');
-                slotId.textContent = slot.id.split('-')[1]; // Just show number to save space
+                    const slotId = document.createElement('span');
+                    slotId.classList.add('slot-id');
+                    slotId.textContent = slot.id.split('-')[1];
 
-                slotEl.appendChild(carImg);
-                slotEl.appendChild(slotId);
-                grid.appendChild(slotEl);
-            });
+                    slotEl.appendChild(carImg);
+                    slotEl.appendChild(slotId);
+                    grid.appendChild(slotEl);
+                });
+            }
 
             section.appendChild(grid);
             parkingLotContainer.appendChild(section);

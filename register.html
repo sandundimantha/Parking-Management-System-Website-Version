@@ -23,50 +23,67 @@
         </div>
     </nav>
 
-    <div class="container" style="max-width: 400px; margin-top: 3rem;">
-        <div class="text-center mb-4">
-            <h1>Create Account</h1>
-            <p class="text-light">Join SmartPark today.</p>
-        </div>
+    <div class="container" style="max-width: 450px; margin-top: 3rem;">
 
-        <form id="register-form"
+        <div class="auth-card"
             style="background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-            <div id="error-msg" class="text-danger mb-4 text-center" style="display: none; color: var(--danger-color);">
+
+            <!-- Tabs -->
+            <div class="auth-tabs" style="display: flex; margin-bottom: 2rem; border-bottom: 2px solid #e2e8f0;">
+                <button id="tab-user" class="active" onclick="switchTab('user')"
+                    style="flex: 1; padding: 1rem; border: none; background: none; font-weight: 600; color: var(--text-color); cursor: pointer; border-bottom: 3px solid var(--secondary-color); transition: all 0.3s;">
+                    User Register
+                </button>
+                <button id="tab-admin" onclick="switchTab('admin')"
+                    style="flex: 1; padding: 1rem; border: none; background: none; font-weight: 600; color: #94a3b8; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s;">
+                    Admin Register
+                </button>
             </div>
 
-            <div class="mb-4">
-                <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
-                <input type="text" id="name" required
-                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+            <div class="text-center mb-4">
+                <h2 id="register-title">Create User Account</h2>
+                <p class="text-light">Join SmartPark today.</p>
             </div>
 
-            <div class="mb-4">
-                <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email
-                    Address</label>
-                <input type="email" id="email" required
-                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
-            </div>
+            <form id="register-form">
+                <div id="error-msg" class="text-danger mb-4 text-center"
+                    style="display: none; color: var(--danger-color);"></div>
 
-            <div class="mb-4">
-                <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Password</label>
-                <input type="password" id="password" required
-                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
-            </div>
+                <div class="mb-4">
+                    <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+                    <input type="text" id="name" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                </div>
 
-            <div class="mb-4">
-                <label for="confirm-password" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Confirm
-                    Password</label>
-                <input type="password" id="confirm-password" required
-                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
-            </div>
+                <div class="mb-4">
+                    <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email
+                        Address</label>
+                    <input type="email" id="email" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                </div>
 
-            <button type="submit" class="btn btn-success btn-block">Register</button>
+                <div class="mb-4">
+                    <label for="password"
+                        style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Password</label>
+                    <input type="password" id="password" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                </div>
 
-            <p class="mt-4 text-center" style="font-size: 0.9rem;">
-                Already have an account? <a href="login.html"
-                    style="color: var(--primary-color); font-weight: 600;">Login here</a>
-            </p>
-        </form>
+                <div class="mb-4">
+                    <label for="confirm-password"
+                        style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Confirm Password</label>
+                    <input type="password" id="confirm-password" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+                </div>
+
+                <button type="submit" class="btn btn-success btn-block" style="width: 100%;">Register</button>
+
+                <p class="mt-4 text-center" style="font-size: 0.9rem;">
+                    Already have an account? <a href="login.html"
+                        style="color: var(--primary-color); font-weight: 600;">Login here</a>
+                </p>
+            </form>
+        </div>
     </div>
 
     <footer class="footer">
@@ -75,6 +92,35 @@
 
     <script src="js/auth.js"></script>
     <script>
+        // State
+        let currentRole = 'user';
+
+        // Tab Switcher
+        function switchTab(role) {
+            currentRole = role;
+            const userTab = document.getElementById('tab-user');
+            const adminTab = document.getElementById('tab-admin');
+            const title = document.getElementById('register-title');
+
+            if (role === 'admin') {
+                userTab.style.borderBottomColor = 'transparent';
+                userTab.style.color = '#94a3b8';
+
+                adminTab.style.borderBottomColor = 'var(--secondary-color)';
+                adminTab.style.color = 'var(--text-color)';
+
+                title.textContent = 'Create Admin Account';
+            } else {
+                adminTab.style.borderBottomColor = 'transparent';
+                adminTab.style.color = '#94a3b8';
+
+                userTab.style.borderBottomColor = 'var(--secondary-color)';
+                userTab.style.color = 'var(--text-color)';
+
+                title.textContent = 'Create User Account';
+            }
+        }
+
         document.getElementById('register-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('name').value;
@@ -89,7 +135,9 @@
                 return;
             }
 
-            const result = Auth.register(name, email, password);
+            // Pass currentRole to register function
+            const result = Auth.register(name, email, password, currentRole);
+
             if (result.success) {
                 alert(result.message);
                 window.location.href = 'login.html';
