@@ -9,13 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="home-page">
 
     <nav class="navbar">
-        <div class="logo">
+        <a href="index.html" class="logo">
             <img src="images/logo.png" alt="SmartPark Logo">
             SmartPark
-        </div>
+        </a>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="booking.html" class="active">Booking</a>
@@ -72,7 +72,31 @@
     </div>
 
     <footer class="footer">
-        <p>&copy; 2026 SmartPark. All rights reserved.</p>
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>About SmartPark</h3>
+                <p>Simplifying parking management with real-time tracking and seamless booking. Park smarter, not
+                    harder.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="booking.html">Booking</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: support@smartpark.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+                <p>Address: 123 Parking Lane, Cityville</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SmartPark. All rights reserved.</p>
+        </div>
     </footer>
 
     <script src="js/booking.js"></script>

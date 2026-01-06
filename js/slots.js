@@ -50,19 +50,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Header with Stats
             const section = document.createElement('div');
-            section.className = 'mb-4';
+            section.className = `mb-4 section-${vt.type.toLowerCase()}`;
+            section.style.padding = '1.5rem';
+            section.style.borderRadius = '1rem';
 
             const header = document.createElement('div');
             header.style.display = 'flex';
             header.style.justifyContent = 'space-between';
             header.style.alignItems = 'center';
             header.style.marginBottom = '1rem';
-            header.style.borderBottom = '1px solid var(--border-color)';
+            header.style.borderBottom = '1px solid rgba(0,0,0,0.05)';
             header.style.paddingBottom = '0.5rem';
 
             const title = document.createElement('h3');
             title.style.marginBottom = '0';
             title.textContent = `${vt.type} Parking`;
+            // Add background box to title
+            title.style.background = 'white';
+            title.style.padding = '0.5rem 1rem';
+            title.style.borderRadius = '0.5rem';
+            title.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            title.style.display = 'inline-block';
 
             const badge = document.createElement('span');
             badge.style.background = availableCount > 0 ? 'var(--secondary-color)' : 'var(--danger-color)';

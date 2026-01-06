@@ -18,9 +18,15 @@
 
 body {
     font-family: var(--font-family);
-    background-color: var(--background-color);
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #fef2f2 100%);
     color: var(--text-color);
     line-height: 1.6;
+    min-height: 100vh;
+}
+
+.home-page {
+    background: url('../images/ai_bg_v2.png') no-repeat center center fixed;
+    background-size: cover;
 }
 
 a {
@@ -30,13 +36,14 @@ a {
 
 /* Navigation */
 .navbar {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: #0f172a;
+    /* Custom Dark Color */
     color: white;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -87,13 +94,13 @@ a {
 
 /* Hero Section (CSS Only) */
 .hero {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: white;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    color: #1e293b;
     text-align: center;
-    padding: 4rem 1rem;
+    padding: 3rem 1rem 2rem;
     margin-bottom: 2rem;
     border-radius: 0 0 2rem 2rem;
-    box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.5);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .hero h1 {
@@ -124,6 +131,19 @@ a {
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
+}
+
+/* Legend Container */
+.legend-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    width: fit-content;
+    margin: 0 auto 2rem auto;
 }
 
 .switch {
